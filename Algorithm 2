@@ -1,0 +1,74 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def larg(e):
+    return len(e)
+
+def ToSet(lst):
+    r = set({})
+    for y in lst:
+        r.add(frozenset(y))
+    return r
+
+def ToList(set):
+    l = []
+    for y in set:
+        l.append(list(y))
+    return l
+
+def Rep(lst,old,new1,new2):
+    for i in range(len(lst)):
+        if lst[i] == old:
+            lst[i] = new1
+    return lst + new2
+
+#BEGIN
+
+def ModularDecom(partition, graph):
+    P = partition
+    G = graph
+    P.sort(reverse = True, key = larg)
+    Z = P[0]
+    Q = P
+    K = [Z]
+    L = [x for x in P if x != Z]
+    while len(L) > 0 or len(K) > 0:
+        
+        if len(L) > 0:
+            S = L[0]
+            X = [S]
+            L = ToList(ToSet(L) - ToSet(X))  
+        else:
+            X = [K[0]]
+            s = X[0][0]
+            S = [s]
+            K = ToList(ToSet(K).difference(ToSet(X)))  
+        for x in S:
+            for Y in ToList(ToSet(Q) - ToSet(X)):
+                if set(G.neighbors(x)) & set(Y) != set({}) and set(G.neighbors(x)) - set(Y) != set({}) and set(Y) - set(G.neighbors(x)) != set({}):
+                    Y1 = set(Y) & set(G.neighbors(x))
+                    Y2 = set(Y) - set(G.neighbors(x))
+                    Q = ToList(ToSet(Rep(Q, Y, list(Y1), [list(Y2)])))
+                    Yaux = [list(Y1),list(Y2)]
+                    Yaux.sort(reverse = True, key = larg)
+                    Ymin = frozenset(Yaux[1])
+                    Ymax = frozenset(Yaux[0])
+                    if Y in L:
+                        L = ToList(ToSet(L) | ({Ymin} | {Ymax}) - {frozenset(Y)})
+                    else:
+                        L = ToList(ToSet(L) | {Ymin})
+                        if Y in K:
+                            K = ToList(ToSet(Rep(ToList(K), ToList({frozenset(Y)}), ToList({Ymax}), [])))
+                        else:
+                            K = ToList(ToSet(ToList(K) + ToList({Ymax})))
+    return Q  
+
+#END
+
+Gtest = nx.complete_bipartite_graph(2,8)
+print(Gtest.edges,Gtest.nodes)
+Ptest = [[5],[0,7,8],[1,6,9,2,3,4]]
+
+print(ModularDecom(Ptest,Gtest))
+#nx.draw(Gtest, with_labels = True)
+#plt.show()
