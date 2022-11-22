@@ -1,0 +1,100 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def OverLap(v, Y, G):
+    l = []
+    Nv = set(G.neighbors(v))
+    if Nv & set(Y) != set({}) and Nv - set(Y) != set({}) and set(Y)- Nv != set({}) == True:
+        return True
+    else:
+        return False
+
+def OverLaping(Y,G):
+    l = []
+    for x in list(G.nodes):
+        if OverLap(x, Y, G) == True:
+            l.append(x)
+        else:
+            continue
+    return l 
+
+print(list(nx.complete_bipartite_graph(4,6).neighbors(1)))
+
+def larg(e):
+    return len(e)
+
+def ToSet(lst):
+    r = set({})
+    for y in lst:
+        r.add(frozenset(y))
+    return r
+
+def ToList(set):
+    l = []
+    for y in set:
+        l.append(list(y))
+    return l
+
+def Rep(lst,old,new1,new2):
+    for i in range(len(lst)):
+        if lst[i] == old:
+            lst[i] = new1
+    return lst + new2
+
+#BEGIN
+
+def ModularDecom(partition, graph):
+    P = partition
+    G = graph
+    P.sort(reverse = True, key = larg)
+    Z = P[0]
+    Q = P
+    K = [Z]
+    L = [x for x in P if x != Z]
+    while len(L) > 0 or len(K) > 0:
+        
+        if len(L) > 0:
+            S = L[0]
+            X = [S]
+            L = ToList(ToSet(L) - ToSet(X))  
+        else:
+            X = [K[0]]
+            s = X[0][0]
+            S = [s]
+            K = ToList(ToSet(K).difference(ToSet(X)))  
+        for x in S:
+            for Y in ToList(ToSet(Q) - ToSet(X)):
+                if set(G.neighbors(x)) & set(Y) != set({}) and set(G.neighbors(x)) - set(Y) != set({}) and set(Y) - set(G.neighbors(x)) != set({}):
+                    Y1 = set(Y) & set(G.neighbors(x))
+                    Y2 = set(Y) - set(G.neighbors(x))
+                    Q = ToList(ToSet(Rep(Q, Y, list(Y1), [list(Y2)])))
+                    Yaux = [list(Y1),list(Y2)]
+                    Yaux.sort(reverse = True, key = larg)
+                    Ymin = frozenset(Yaux[1])
+                    Ymax = frozenset(Yaux[0])
+                    if Y in L:
+                        L = ToList(ToSet(L) | ({Ymin} | {Ymax}) - {frozenset(Y)})
+                    else:
+                        L = ToList(ToSet(L) | {Ymin})
+                        if Y in K:
+                            K = ToList(ToSet(Rep(ToList(K), ToList({frozenset(Y)}), ToList({Ymax}), [])))
+                        else:
+                            K = ToList(ToSet(ToList(K) + ToList({Ymax})))
+    return Q  
+    
+    def FactPerm(G, v):
+    P = [list(G.neighbors(v)) , [v] , list(set(G.nodes) - set(G.neighbors(v)) - {v})]
+    O = OverLaping(P[0],G) + OverLaping(P[1],G) + OverLaping(P[2], G) 
+    if  len(O) > 0:
+        x = O[0]
+        Nx = set(G.neighbors(x))
+        Ys = filter(lambda y: OverLap(x, y, G) == True, P)
+        Y = Ys[0]
+        if x in list(G.neighbors(v)) == True and Y == list(set(G.nodes) - set(G.neighbors(v)) - {v}) or x in list(set(G.nodes) - set(G.neighbors(v)) - {v}) == True and Y == list(G.neighbors(v)):
+            P = Rep(P,Y, list(set(Y) & set(G.neighbors(v))), list(set(Y) & set(G.nodes) - set(G.neighbors(v)) - {v}))
+            return P
+        else:
+            P = Rep(P,Y, list(set(Y) & set(G.nodes) - set(G.neighbors(v)) - {v}), list(set(Y) & set(G.neighbors(v))))
+            return P
+    else:
+        return P
