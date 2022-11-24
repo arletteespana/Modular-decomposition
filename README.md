@@ -4,9 +4,15 @@ Implementation of the algorithms exposed in *A survey of the algorithmic aspects
 
 ### Installation and Dependencies
 
+They require Python 3.7 or higher. They have the following dependencies:
+
 - [NetworkX](https://networkx.org/)
 - [Matplotlib](https://matplotlib.org/)
 
-## Modular Partition
+### Usage
+
+
+
+## Modular partition
 
 
