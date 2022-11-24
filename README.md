@@ -23,4 +23,6 @@ Ptest = [[5],[0,7,8],[1,6,9,2,3,4]]
 print(ModularPartition(Ptest,Gtest))
 ```
 
+## References
 
+Habib M., Paul C. A survey of the algorithmic aspects of modular decomposition, Comp. Sci. Rev., 4 (2010), pp. 41-59.
