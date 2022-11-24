@@ -11,7 +11,7 @@ They require Python 3.7 or higher. They have the following dependencies:
 
 ### Usage
 
-
+The function `ModularPartition` require a NetworkX `Graph` and a list with one partition of its vertices set as input.
 
 ## Modular partition
 
