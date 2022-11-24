@@ -24,7 +24,7 @@ def Rep(lst,old,new1,new2):
 
 #BEGIN
 
-def ModularDecom(partition, graph):
+def ModularPartition(partition, graph):
     P = partition
     G = graph
     P.sort(reverse = True, key = larg)
@@ -69,6 +69,6 @@ Gtest = nx.complete_bipartite_graph(2,8)
 print(Gtest.edges,Gtest.nodes)
 Ptest = [[5],[0,7,8],[1,6,9,2,3,4]]
 
-print(ModularDecom(Ptest,Gtest))
+print(ModularPartition(Ptest,Gtest))
 #nx.draw(Gtest, with_labels = True)
 #plt.show()
