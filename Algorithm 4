@@ -2,9 +2,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 def OverLap(v, Y, G):
-    l = []
     Nv = set(G.neighbors(v))
-    if Nv & set(Y) != set({}) and Nv - set(Y) != set({}) and set(Y)- Nv != set({}) == True:
+    if Nv & set(Y) != set({}) and Nv - set(Y) != set({}) and set(Y)- Nv != set({}):
         return True
     else:
         return False
@@ -17,8 +16,6 @@ def OverLaping(Y,G):
         else:
             continue
     return l 
-
-print(list(nx.complete_bipartite_graph(4,6).neighbors(1)))
 
 def larg(e):
     return len(e)
@@ -41,7 +38,7 @@ def Rep(lst,old,new1,new2):
             lst[i] = new1
     return lst + new2
 
-#BEGIN
+#BEGIN algo 2
 
 def ModularDecom(partition, graph):
     P = partition
@@ -81,20 +78,74 @@ def ModularDecom(partition, graph):
                         else:
                             K = ToList(ToSet(ToList(K) + ToList({Ymax})))
     return Q  
-    
-    def FactPerm(G, v):
-    P = [list(G.neighbors(v)) , [v] , list(set(G.nodes) - set(G.neighbors(v)) - {v})]
-    O = OverLaping(P[0],G) + OverLaping(P[1],G) + OverLaping(P[2], G) 
-    if  len(O) > 0:
-        x = O[0]
-        Nx = set(G.neighbors(x))
-        Ys = filter(lambda y: OverLap(x, y, G) == True, P)
-        Y = Ys[0]
-        if x in list(G.neighbors(v)) == True and Y == list(set(G.nodes) - set(G.neighbors(v)) - {v}) or x in list(set(G.nodes) - set(G.neighbors(v)) - {v}) == True and Y == list(G.neighbors(v)):
-            P = Rep(P,Y, list(set(Y) & set(G.neighbors(v))), list(set(Y) & set(G.nodes) - set(G.neighbors(v)) - {v}))
-            return P
-        else:
-            P = Rep(P,Y, list(set(Y) & set(G.nodes) - set(G.neighbors(v)) - {v}), list(set(Y) & set(G.neighbors(v))))
-            return P
+
+#END  algo 2
+
+def DelV(list):
+    if [] in list:
+        list.remove([])
+        return list
     else:
-        return P
+        return list
+
+def Overlaps(part, graph):
+    TO = []
+    for k in range(len(part)):
+        TO = TO + OverLaping(part[k], graph)
+        return TO
+
+def flatten(list_of_lists):
+    if len(list_of_lists) == 0:
+        return list_of_lists
+    if isinstance(list_of_lists[0], list):
+        return flatten(list_of_lists[0]) + flatten(list_of_lists[1:])
+    return list_of_lists[:1] + flatten(list_of_lists[1:])
+
+# BEGIN algo 4
+
+def FactPerm(graph, vertex):
+    FP = []
+    Gp = graph
+    v = vertex
+    Pr = DelV(ToList([set(Gp.neighbors(v)), {v}, set(Gp.nodes) - set(Gp.neighbors(v)) - {v}]))
+    
+    O = Overlaps(Pr,Gp)
+    
+    MD = DelV(ModularDecom(ToList([set(Gp.neighbors(v)), {v}, set(Gp.nodes) - set(Gp.neighbors(v)) - {v}]), graph))
+    
+    if len(Gp.nodes) == len(Pr):
+        return flatten(Pr)
+    elif len(O) == 0:
+        FP.append(Pr)
+        return flatten(Pr)    
+    else:    
+   
+    
+        while len(O) > 0:
+            x = O[0]
+            Nx = set(Gp.neighbors(x))
+            Ys = list(filter(lambda y: OverLap(x, y, Gp) == True, Pr))
+            Y = Ys[0]
+            
+            if x in list(Gp.neighbors(v)) == True and Y == list(set(Gp.nodes) - set(Gp.neighbors(v)) - {v}) or x in list(set(Gp.nodes) - set(Gp.neighbors(v)) - {v}) == True and Y == list(Gp.neighbors(v)):
+                Pr = Rep(Pr,Y, [list(set(Y) & set(Gp.neighbors(x)))], list(set(Y) & (set(Gp.nodes) - set(Gp.neighbors(x)) - {x})))
+                
+            else:
+                Pr = Rep(Pr,Y, list(set(Y) & (set(Gp.nodes) - set(Gp.neighbors(x)) - {x})), [list(set(Y) & set(Gp.neighbors(x)))])
+                
+            for X in MD:
+                
+                if len(X) > 1:
+                    PX = FactPerm(nx.subgraph(graph,X), X[-1])
+                    FP.append(PX)
+                     
+                else:
+                    FP.append(X)
+            return flatten(FP)
+
+# END algo 4
+
+Gtest = nx.Graph()
+Gtest.add_edges_from([(1,2),(1,3),(1,4),(2,4),(2,5),(2,6),(2,7),(3,4),(3,5),(3,6),(3,7),(4,5),(4,6),(4,7),(5,6),(5,7),(6,8),(6,9),(6,10),(6,11),(7,8),(7,9),(7,10),(7,11),(8,9),(8,10),(8,11),(9,10),(9,11)])
+
+print(FactPerm(Gtest, 1))
