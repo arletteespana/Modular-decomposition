@@ -1,4 +1,4 @@
-# Modular descomposition
+# Modular decomposition
 
 Implementation of the algorithms exposed in *A survey of the algorithmic aspects of modular decomposition* by Michel Habib and Christophe Paul, 2010.
 
@@ -11,7 +11,7 @@ They require Python 3.7 or higher. They have the following dependencies:
 
 ### Usage
 
-The function `ModularPartition` require a NetworkX `Graph` and a list with one partition of its vertices set as input.
+The functions `ModularPartition`, `FactPerm`, `FractureTree`, and `ModularDecomposition` require a NetworkX `Graph`, a list with one partition of its vertices set, a vertex, and one list as input.
 
 ## Modular partition
 
@@ -32,6 +32,11 @@ Gtest.add_edges_from([(1,2),(1,3),(1,4),(2,4),(2,5),(2,6),(2,7),(3,4),(3,5),(3,6
 print(FactPerm(Gtest, 1))
 ```
 
+## Fracture tree
+
+Given the factoring permutation of a graph G, this functions give as an output the fracture tree, that is actually a good estimation of the Modular despomposition of G.
+
+## Modular decomposition
 
 ## References
 
