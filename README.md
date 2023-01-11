@@ -34,7 +34,7 @@ print(FactPerm(Gtest, 1))
 
 ## Fracture tree
 
-Given the factoring permutation of a graph G, this functions give as an output the fracture tree, that is actually a good estimation of the Modular despomposition of G.
+Given the factoring permutation of a graph G, this functions give as an output the fracture tree, that is actually a good estimation of the Modular decomposition of G.
 
 ## Modular decomposition
 
