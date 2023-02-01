@@ -1,0 +1,98 @@
+def IsSplit(vertex, subset, graph):
+    arist = []
+    for x in subset:
+        arist.append((vertex, x) in graph.edges)
+    if (False in arist) and (True in arist):
+        return True
+    else: 
+        return False
+def Leftmost(x, subset,lst):
+    l = []
+    t = lst.index(x)
+    for x in subset:
+        l.append((lst.index(x),x))
+    l.sort()
+    s = l[0][0]
+    u = l[0][1]
+    if s<t:
+        return u
+    else:
+        return []
+
+def Rightmost(x, subset,lst):
+    l = []
+    t = lst.index(x)
+    for x in subset:
+        l.append((lst.index(x),x))
+    l.sort(reverse=True)
+    s = l[0][0]
+    u = l[0][1]
+    if s>t:
+        return u
+    else:
+        return []
+
+def Leftfraq(x,y,perm,graph):
+    l = []
+    for u in perm:
+        if IsSplit(u,[x,y],graph) == True:
+            l.append(u)
+        else:
+            continue
+    if len(l) == 0:
+        return []
+    else:
+        if Leftmost(x,l,perm) != []:
+            return [Leftmost(x,l,perm),x]    
+        else:
+            return []
+def Rightfraq(x,y,perm,graph):
+    l = []
+    for u in perm:
+        if IsSplit(u,[x,y],graph) == True:
+            l.append(u)
+        else:
+            continue
+    if len(l) == 0:
+        return []
+    else:
+        if Rightmost(y,l,perm) != []:
+            return [y,Rightmost(x,l,perm)]    
+        else:
+            return []
+
+def Allfraq(perm,graph):
+    l = []
+    r = []
+    for i in range(len(perm)-1):
+        if Leftfraq(perm[i],perm[i+1],perm,graph) != []:
+            l.append(Leftfraq(perm[i],perm[i+1],perm,graph))
+        else:
+            continue
+    for i in range(len(perm)-1):
+        if Rightfraq(perm[i],perm[i+1],perm,graph) != []:
+            r.append(Rightfraq(perm[i],perm[i+1],perm,graph))
+        else:
+            continue
+    return l + r
+
+def Delduplicates(lst):
+    new_list = []
+    [new_list.append(item) for item in lst if item not in new_list]
+    return new_list
+
+def Parentesis(cord,lst):
+    a = lst.index(cord[0])
+    b = lst.index(cord[1])
+    lst.insert(a,"(")
+    lst.insert(b+2,")")
+    return lst
+
+def FractureTree(v, graph):
+    l = Delduplicates(Allfraq(FactPerm(graph, v), graph))
+    t = FactPerm(graph, v)
+    s = []
+    for x in l:
+        s = Parentesis(x,t)
+    print(s)
+
