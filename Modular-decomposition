@@ -1,1 +1,3 @@
-
+def ModularDecomposition(graph):
+    v0 = list(graph.nodes())[0]
+    return FractureTree(v0, graph)
