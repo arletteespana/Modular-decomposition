@@ -46,6 +46,15 @@ FractureTree(1,H)
 
 ## Modular decomposition
 
+Given a graph G, this functions give as an output a good estimation of the Modular decomposition of G.
+
+```
+Gtest = nx.Graph()
+H = nx.Graph(Gtest)
+H.to_undirected()
+ModularDecomposition(H)
+```
+
 ## References
 
 Habib M., Paul C. A survey of the algorithmic aspects of modular decomposition, Comp. Sci. Rev., 4 (2010), pp. 41-59.
